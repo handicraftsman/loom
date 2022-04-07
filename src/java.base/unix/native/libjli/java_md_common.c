@@ -129,7 +129,14 @@ Resolve(char *indir, char *cmd)
     char name[PATH_MAX + 2], *real;
 
     if ((JLI_StrLen(indir) + JLI_StrLen(cmd) + 1)  > PATH_MAX) return 0;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
+// ^ GCC 12 tries to check if we don't overflow name buffer by checking if
+// snprintf args can require more bytes than allocated, but somehow it
+// interprets the above if as sizeof indir == PATH_MAX and
+// sizeof cmd == PATH_MAX, which causes this code to not compile.
     JLI_Snprintf(name, sizeof(name), "%s%c%s", indir, FILE_SEPARATOR, cmd);
+#pragma GCC diagnostic pop
     if (!ProgramExists(name)) return 0;
     real = JLI_MemAlloc(PATH_MAX + 2);
     if (!realpath(name, real))

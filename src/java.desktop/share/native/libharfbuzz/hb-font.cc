@@ -2364,8 +2364,11 @@ hb_font_funcs_set_glyph_func (hb_font_funcs_t          *ffuncs,
                                         hb_font_get_nominal_glyph_trampoline,
                                         trampoline,
                                         trampoline_destroy);
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wuse-after-free"
+// ^ GCC 12 is drunk again
   trampoline_reference (&trampoline->closure);
+#pragma GCC diagnostic pop
   hb_font_funcs_set_variation_glyph_func (ffuncs,
                                           hb_font_get_variation_glyph_trampoline,
                                           trampoline,

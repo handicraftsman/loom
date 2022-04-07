@@ -177,7 +177,11 @@ static int popenCommand(const char* cmdlineFormat, const char* arg,
                 goto cleanup;
             }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wuse-after-free"
+// ^ there is no dereference, GCC 12 is drunk
             strBufNextChar = strNewBufBegin + (strBufNextChar - strBufBegin);
+#pragma GCC diagnostic pop
             strBufEnd = strNewBufBegin + strBufCapacity;
             strBufBegin = strNewBufBegin;
         }

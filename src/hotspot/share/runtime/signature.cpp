@@ -310,7 +310,7 @@ inline int SignatureStream::scan_type(BasicType type) {
     while ((end < limit) && ((char)base[end] == JVM_SIGNATURE_ARRAY)) { end++; }
     _array_prefix = end - _end;  // number of '[' chars just skipped
     if (Signature::has_envelope(base[end])) {
-      tem = (const u1 *) memchr(&base[end], JVM_SIGNATURE_ENDCLASS, limit - end);
+      tem = (const u1 *) memchr(&base[end], JVM_SIGNATURE_ENDCLASS, limit >= end ? limit - end : 1);
       return (tem == NULL ? limit : tem + 1 - base);
     }
     // Skipping over a single character for a primitive type.

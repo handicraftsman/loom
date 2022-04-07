@@ -289,7 +289,10 @@ find_positions(int fd, Byte *eb, jlong* base_offset, jlong* censtart)
         if (ENDSIG_AT(cp) && (cp + ENDHDR + ENDCOM(cp) == endpos)) {
             (void) memcpy(eb, cp, ENDHDR);
             free(buffer);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wuse-after-free" // We DO NOT dereference endpos (which compiler screams about) here 
             pos = flen - (endpos - cp);
+#pragma GCC diagnostic pop
             return find_positions64(fd, eb, pos, base_offset, censtart);
         }
     free(buffer);
